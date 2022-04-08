@@ -1,0 +1,259 @@
+swagger: "2.0"
+info:
+    description: "Swagger for Ecommerce"
+    version: 1.0.1
+    title: "Swagger for Ecommerce"
+tags:
+    - name: "Auth"
+    - name: "Products"
+    - name: "Orders"
+    - name: "Categories"
+    - name: "Attributes"
+schemes:
+    - "http"
+    - "https"
+paths:
+    /api/login:
+        post:
+            tags:
+                - "Auth"
+            summary: Đăng nhập
+            responses:
+                "200":
+                    description: Đăng nhập thành công
+                "400":
+                    description: Không đăng nhập được
+            parameters:
+                - in: "body"
+                  name: "body"
+                  description: "Bắt buộc phải có các trường giống bên dưới"
+                  required: true
+                  schema:
+                      $ref: "#/components/schemas/Login"
+    /api/register:
+        post:
+            tags:
+                - "Auth"
+            summary: Đăng ký
+            responses:
+                "200":
+                    description: Đăng ký thành công
+                "400":
+                    description: Không đăng ký được
+            parameters:
+                - in: "body"
+                  name: "body"
+                  description: "Bắt buộc phải có các trường giống bên dưới"
+                  required: true
+                  schema:
+                      $ref: "#/components/schemas/Register"
+    /api/products:
+        get:
+            tags:
+                - "Products"
+            summary: Lấy danh sách sản phẩm
+            responses:
+                "200":
+                    description: Lấy sản phẩm thành công
+                "400":
+                    description: Không lấy được sản phẩm
+    /api/product:
+        post:
+            tags:
+                - "Products"
+            summary: Thêm sản phẩm
+            responses:
+                "200":
+                    description: Thêm sản phẩm thành công
+                "400":
+                    description: Không thêm được sản phẩm
+            parameters:
+                - in: "body"
+                  name: "body"
+                  description: "Bắt buộc phải có các trường giống bên dưới"
+                  required: true
+                  schema:
+                      $ref: "#/components/schemas/Product"
+    /api/product/{productId}:
+        put:
+            tags:
+                - "Products"
+            summary: Cập nhật sản phẩm
+            responses:
+                "200":
+                    description: Cập nhật sản phẩm thành công
+                "400":
+                    description: Không cập nhật được sản phẩm
+            parameters:
+                - in: "path"
+                  name: "productId"
+                  required: true
+                  type: "string"
+                - in: "body"
+                  name: "body"
+                  description: "Bắt buộc phải có các trường giống bên dưới"
+                  required: true
+                  schema:
+                      $ref: "#/components/schemas/Product"
+        get:
+            tags:
+                - "Products"
+            summary: "Tìm sản phẩm theo _id"
+            parameters:
+                - name: "productId"
+                  in: "path"
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "Tìm sản phẩm thành công"
+                "400":
+                    description: "Tìm sản phẩm thất bại"
+        delete:
+            tags:
+                - "Products"
+            summary: "Xoá sản phẩm theo _id"
+            parameters:
+                - name: "productId"
+                  in: "path"
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "Xoá sản phẩm thành công"
+                "400":
+                    description: "Xoá sản phẩm thất bại"
+    /api/product/get-product-by-related/{productId}:
+        get:
+            tags:
+                - "Products"
+            summary: "Tìm sản phẩm cùng danh mục theo _id"
+            parameters:
+                - name: "productId"
+                  in: "path"
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "Tìm sản phẩm thành công"
+                "400":
+                    description: "Tìm sản phẩm thất bại"
+    /api/product/get-product-by-slug/{productSlug}:
+        get:
+            tags:
+                - "Products"
+            summary: "Tìm sản phẩm theo slug"
+            parameters:
+                - name: "productSlug"
+                  in: "path"
+                  required: true
+                  type: "string"
+            responses:
+                "200":
+                    description: "Tìm sản phẩm thành công"
+                "400":
+                    description: "Tìm sản phẩm thất bại"
+
+    /api/categories:
+        get:
+            tags:
+                - "Categories"
+            summary: Lấy danh sách danh mục
+            responses:
+                "200":
+                    description: Lấy danh mục thành công
+                "400":
+                    description: Không lấy được danh mục
+    /api/attributes:
+        get:
+            tags:
+                - "Attributes"
+            summary: Lấy danh sách thuộc tính
+            responses:
+                "200":
+                    description: Lấy thuộc tính thành công
+                "400":
+                    description: Không lấy được thuộc tính
+    /api/orders:
+        get:
+            tags:
+                - "Orders"
+            summary: Lấy danh sách đơn hàng
+            responses:
+                "200":
+                    description: Lấy đơn hàng thành công
+                "400":
+                    description: Không lấy được đơn hàng
+
+securityDefinitions:
+    APIKey:
+        type: apiKey
+        name: Authorization
+        in: header
+security:
+    - APIKey: []
+
+# Models
+components:
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+    schemas:
+        Product:
+            type: object
+            properties:
+                productTitle:
+                    type: string
+                productSKU:
+                    type: string
+                productImage:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            base64:
+                                type: "string"
+                productDescription:
+                    type: string
+                productPrice:
+                    type: integer
+                productCost:
+                    type: integer
+                productStock:
+                    type: integer
+                productColor:
+                    type: array
+                    items:
+                        type: string
+                productSize:
+                    type: array
+                    items:
+                        type: string
+                category:
+                    type: string
+                productView:
+                    type: integer
+                    default: 0
+                productFeatured:
+                    type: "boolean"
+                    default: false
+        Login:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        Register:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+                fullname:
+                    type: string
+
+definitions:
