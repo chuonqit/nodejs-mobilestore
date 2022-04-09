@@ -22,11 +22,17 @@ import sliderRoute from "./routes/sliderRoute";
 
 const app = express();
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
+const server = http.createServer(app);
+
+const io = SocketIO(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true,
+    },
 });
+
+io.set("origins", "*:*");
 
 // middlewares
 app.use(morgan("tiny"));
@@ -36,6 +42,7 @@ const swaggerJSDocs = yaml.load(__dirname + "/configs/api.yaml");
 
 // app.use(express.urlencoded({ limit: "50mb" }));
 app.use(cors());
+app.options("*", cors());
 
 // cloudinary config
 cloudinary.config({
@@ -73,15 +80,6 @@ const insertNotification = async (message) => {
     return notification;
 };
 
-const server = http.createServer(app);
-
-const io = SocketIO(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-        credentials: true,
-    },
-});
 io.on("connection", (socket) => {
     socket.on("add-notification-client", async function (message) {
         const result = await insertNotification(message);
