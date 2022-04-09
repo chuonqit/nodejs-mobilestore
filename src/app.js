@@ -30,7 +30,7 @@ const swaggerJSDocs = yaml.load(__dirname + "/configs/api.yaml");
 // app.use(express.urlencoded({ limit: "50mb" }));
 app.use(
     cors({
-        origin: ["http://localhost:3000", "https://chuong-mobilestore.vercel.app/"],
+        origin: "*",
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
         credentials: true,
@@ -81,7 +81,7 @@ const server = app.listen(PORT, () => {
 
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:3000", "https://chuong-mobilestore.vercel.app/"],
+        origin: "*",
         credentials: true,
     },
 });
