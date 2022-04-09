@@ -21,7 +21,6 @@ import orderRoute from "./routes/orderRoute";
 import sliderRoute from "./routes/sliderRoute";
 
 const app = express();
-const server = http.createServer(app);
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -74,17 +73,25 @@ const insertNotification = async (message) => {
     return notification;
 };
 
-// server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-    console.log("Server is running on PORT:", PORT);
-});
+const server = http.createServer(app);
 
-const io = SocketIO(server);
+const io = SocketIO(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true,
+    },
+});
 io.on("connection", (socket) => {
     socket.on("add-notification-client", async function (message) {
         const result = await insertNotification(message);
         io.emit("add-notification-server", result);
     });
     socket.on("disconnect", () => {});
+});
+
+// server
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+    console.log("Server is running on PORT:", PORT);
 });
