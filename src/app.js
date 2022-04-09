@@ -21,6 +21,7 @@ import orderRoute from "./routes/orderRoute";
 import sliderRoute from "./routes/sliderRoute";
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -72,8 +73,6 @@ const insertNotification = async (message) => {
     }).save();
     return notification;
 };
-
-const server = http.createServer(app);
 
 // server
 const PORT = process.env.PORT || 5000;
