@@ -8,6 +8,7 @@ import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
 import { Server } from "socket.io";
 import http from "http";
+import Notification from "./models/Notification";
 
 import authRoute from "./routes/authRoute";
 import userRoute from "./routes/userRoute";
@@ -64,9 +65,23 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-    socket.on("add-to-cart-client", function (data) {
-        io.emit("add-to-cart-server", data);
+    socket.on("add-notification-client", async function (message) {
+        const result = await insertNotification(message);
+        io.emit("add-notification-server", result);
     });
+    socket.on("disconnect", () => {});
+});
+
+const insertNotification = async (message) => {
+    const notification = await new Notification({
+        message: message,
+    }).save();
+    return notification;
+};
+
+app.get("/api/notifications", async (req, res) => {
+    const notifications = await Notification.find({}).limit(10).sort({ createdAt: -1 }).exec();
+    res.status(200).json(notifications);
 });
 
 // server
