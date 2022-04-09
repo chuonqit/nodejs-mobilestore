@@ -6,6 +6,7 @@ import cloudinary from "cloudinary";
 import dotenv from "dotenv";
 import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
+import http from "http";
 import { Server } from "socket.io";
 import Notification from "./models/Notification";
 
@@ -66,11 +67,7 @@ const insertNotification = async (message) => {
     return notification;
 };
 
-// server
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-    console.log("Server is running on PORT:", PORT);
-});
+const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
@@ -85,4 +82,10 @@ io.on("connection", (socket) => {
         io.emit("add-notification-server", result);
     });
     socket.on("disconnect", () => {});
+});
+
+// server
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+    console.log("Server is running on PORT:", PORT);
 });
