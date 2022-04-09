@@ -6,7 +6,7 @@ import cloudinary from "cloudinary";
 import dotenv from "dotenv";
 import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
-import SocketIO from "socket.io";
+import { Server } from "socket.io";
 import Notification from "./models/Notification";
 
 import authRoute from "./routes/authRoute";
@@ -27,14 +27,15 @@ app.use(express.json({ limit: "50mb" }));
 dotenv.config({ path: __dirname + "/configs/settings.env" });
 const swaggerJSDocs = yaml.load(__dirname + "/configs/api.yaml");
 
-app.use(function (request, response, next) {
-    response.header("Access-Control-Allow-Origin", "*");
-    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
 // app.use(express.urlencoded({ limit: "50mb" }));
-app.use(cors());
+app.use(
+    cors({
+        origin: ["http://localhost:3000", "https://chuong-mobilestore.vercel.app/"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
+        credentials: true,
+    })
+);
 
 // cloudinary config
 cloudinary.config({
@@ -78,12 +79,10 @@ const server = app.listen(PORT, () => {
     console.log("Server is running on PORT:", PORT);
 });
 
-const io = SocketIO(server, {
+const io = new Server(server, {
     cors: {
-        origin: "*",
+        origin: ["http://localhost:3000", "https://chuong-mobilestore.vercel.app/"],
         credentials: true,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
     },
 });
 
