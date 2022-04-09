@@ -28,14 +28,7 @@ dotenv.config({ path: __dirname + "/configs/settings.env" });
 const swaggerJSDocs = yaml.load(__dirname + "/configs/api.yaml");
 
 // app.use(express.urlencoded({ limit: "50mb" }));
-app.use(
-    cors({
-        origin: "*",
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
-        credentials: true,
-    })
-);
+app.use(cors());
 
 // cloudinary config
 cloudinary.config({
@@ -82,7 +75,7 @@ const server = app.listen(PORT, () => {
 const io = new Server(server, {
     cors: {
         origin: "*",
-        credentials: true,
+        credentials: false,
     },
 });
 
