@@ -74,7 +74,12 @@ const insertNotification = async (message) => {
 };
 
 const server = http.Server(app);
-const io = SocketIO(server);
+const io = SocketIO(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+    },
+});
 
 io.on("connection", (socket) => {
     socket.on("add-notification-client", async function (message) {
