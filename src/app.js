@@ -29,7 +29,7 @@ const io = SocketIO(server, {
         methods: ["GET", "POST"],
         credentials: true,
     },
-});
+}).listen(server);
 
 // middlewares
 app.use(morgan("tiny"));
