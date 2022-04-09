@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
 import http from "http";
-import { Server } from "socket.io";
+import SocketIO from "socket.io";
 import Notification from "./models/Notification";
 
 import authRoute from "./routes/authRoute";
@@ -67,14 +67,8 @@ const insertNotification = async (message) => {
     return notification;
 };
 
-const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        credentials: false,
-    },
-});
+const server = http.Server(app);
+const io = SocketIO(server);
 
 io.on("connection", (socket) => {
     socket.on("add-notification-client", async function (message) {
