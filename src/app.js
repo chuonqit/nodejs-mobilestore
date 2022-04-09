@@ -21,7 +21,6 @@ import orderRoute from "./routes/orderRoute";
 import sliderRoute from "./routes/sliderRoute";
 
 const app = express();
-
 const server = http.createServer(app);
 
 const io = SocketIO(server, {
@@ -32,8 +31,6 @@ const io = SocketIO(server, {
     },
 });
 
-io.set("origins", "*:*");
-
 // middlewares
 app.use(morgan("tiny"));
 app.use(express.json({ limit: "50mb" }));
@@ -42,7 +39,6 @@ const swaggerJSDocs = yaml.load(__dirname + "/configs/api.yaml");
 
 // app.use(express.urlencoded({ limit: "50mb" }));
 app.use(cors());
-app.options("*", cors());
 
 // cloudinary config
 cloudinary.config({
