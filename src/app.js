@@ -6,7 +6,7 @@ import cloudinary from "cloudinary";
 import dotenv from "dotenv";
 import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
-import { Server } from "socket.io";
+import SocketIO from "socket.io";
 import Notification from "./models/Notification";
 
 import authRoute from "./routes/authRoute";
@@ -27,6 +27,12 @@ app.use(express.json({ limit: "50mb" }));
 dotenv.config({ path: __dirname + "/configs/settings.env" });
 const swaggerJSDocs = yaml.load(__dirname + "/configs/api.yaml");
 
+app.use(function (request, response, next) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 // app.use(express.urlencoded({ limit: "50mb" }));
 app.use(cors());
 
@@ -36,7 +42,6 @@ cloudinary.config({
     api_key: "742189537939194",
     api_secret: "-s8kHVYptjhA-F3I7KyNFKZVswE",
 });
-
 // mongodb connect
 mongoose
     .connect(process.env.MONGODB_ONLINE)
@@ -73,9 +78,14 @@ const server = app.listen(PORT, () => {
     console.log("Server is running on PORT:", PORT);
 });
 
-const io = new Server(server, {
+io = SocketIO.listen(server);
+
+const io = SocketIO(server, {
     cors: {
         origin: "*",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept"],
     },
 });
 
