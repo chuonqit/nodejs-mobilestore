@@ -73,7 +73,7 @@ const insertNotification = async (message) => {
     return notification;
 };
 
-const server = http.Server(app);
+const server = http.createServer(app);
 
 // server
 const PORT = process.env.PORT || 5000;
@@ -81,7 +81,7 @@ server.listen(PORT, () => {
     console.log("Server is running on PORT:", PORT);
 });
 
-const io = SocketIO.listen(server);
+const io = SocketIO(server);
 io.on("connection", (socket) => {
     socket.on("add-notification-client", async function (message) {
         const result = await insertNotification(message);
