@@ -76,7 +76,7 @@ const insertNotification = async (message) => {
 const server = http.Server(app);
 const io = SocketIO(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "*",
         methods: ["GET", "POST"],
     },
 });
