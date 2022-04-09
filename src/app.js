@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
 import { Server } from "socket.io";
-import http from "http";
 import Notification from "./models/Notification";
 
 import authRoute from "./routes/authRoute";
@@ -56,7 +55,23 @@ app.use("/api", productVariantRoute);
 app.use("/api", orderRoute);
 app.use("/api", sliderRoute);
 
-const server = http.createServer(app);
+app.get("/api/notifications", async (req, res) => {
+    const notifications = await Notification.find({}).limit(10).sort({ createdAt: -1 }).exec();
+    res.status(200).json(notifications);
+});
+
+const insertNotification = async (message) => {
+    const notification = await new Notification({
+        message: message,
+    }).save();
+    return notification;
+};
+
+// server
+const PORT = process.env.PORT || 5000;
+const server = app.listen(PORT, () => {
+    console.log("Server is running on PORT:", PORT);
+});
 
 const io = new Server(server, {
     cors: {
@@ -70,22 +85,4 @@ io.on("connection", (socket) => {
         io.emit("add-notification-server", result);
     });
     socket.on("disconnect", () => {});
-});
-
-const insertNotification = async (message) => {
-    const notification = await new Notification({
-        message: message,
-    }).save();
-    return notification;
-};
-
-app.get("/api/notifications", async (req, res) => {
-    const notifications = await Notification.find({}).limit(10).sort({ createdAt: -1 }).exec();
-    res.status(200).json(notifications);
-});
-
-// server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-    console.log("Server is running on PORT:", PORT);
 });
