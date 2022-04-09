@@ -7,8 +7,7 @@ import dotenv from "dotenv";
 import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
 import { Server } from "socket.io";
-import https from "https";
-// import http from "http";
+import http from "http";
 import Notification from "./models/Notification";
 
 import authRoute from "./routes/authRoute";
@@ -57,8 +56,7 @@ app.use("/api", productVariantRoute);
 app.use("/api", orderRoute);
 app.use("/api", sliderRoute);
 
-// const server = http.createServer(app);
-const server = https.createServer(app);
+const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
