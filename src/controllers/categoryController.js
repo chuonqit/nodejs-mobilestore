@@ -87,12 +87,10 @@ export const updateCategory = async (req, res) => {
     try {
         const { name, image } = req.body;
 
-        let imageFile = "";
+        let imageFile = image.url;
         if (image.base64) {
             const result = await cloudinaryBase64Upload(image.base64);
             imageFile = result.url;
-        } else {
-            imageFile = image.url;
         }
 
         const category = await Category.findOneAndUpdate(

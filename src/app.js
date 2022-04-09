@@ -6,6 +6,8 @@ import cloudinary from "cloudinary";
 import dotenv from "dotenv";
 import swaggerUI from "swagger-ui-express";
 import yaml from "yamljs";
+import { Server } from "socket.io";
+import http from "http";
 
 import authRoute from "./routes/authRoute";
 import userRoute from "./routes/userRoute";
@@ -53,8 +55,22 @@ app.use("/api", productVariantRoute);
 app.use("/api", orderRoute);
 app.use("/api", sliderRoute);
 
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+    },
+});
+
+io.on("connection", (socket) => {
+    socket.on("add-to-cart-client", function (data) {
+        io.emit("add-to-cart-server", data);
+    });
+});
+
 // server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log("Server is running on PORT:", PORT);
 });
