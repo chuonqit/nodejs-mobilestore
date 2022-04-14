@@ -19,6 +19,7 @@
         "cloudinary": "^1.29.0",
         "cors": "^2.8.5",
         "express": "^4.17.3",
+        "formidable": "^2.0.1",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.2.9",
         "shortid": "^2.2.16",
@@ -26,6 +27,7 @@
         "socket.io": "^4.4.1",
         "swagger-ui-express": "^4.3.0",
         "uuid": "^8.3.2",
+        "xlsx": "^0.18.5",
         "yamljs": "^0.3.0"
     }
 }

@@ -26,10 +26,8 @@ const server = http.createServer(app);
 const io = SocketIO(server, {
     cors: {
         origin: "*",
-        methods: ["GET", "POST"],
-        credentials: true,
     },
-}).listen(server);
+});
 
 // middlewares
 app.use(morgan("tiny"));
@@ -67,6 +65,11 @@ app.use("/api", sliderRoute);
 app.get("/api/notifications", async (req, res) => {
     const notifications = await Notification.find({}).limit(10).sort({ createdAt: -1 }).exec();
     res.status(200).json(notifications);
+});
+
+app.get("/api/excels", async (req, res) => {
+    const result = await TestExcel.find({}).exec();
+    res.status(200).json(result);
 });
 
 const insertNotification = async (message) => {
